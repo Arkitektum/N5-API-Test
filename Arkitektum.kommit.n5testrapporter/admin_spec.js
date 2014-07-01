@@ -4,9 +4,6 @@
 //var request = require('lib/superagent');
 //var rootApi = "http://localhost:49708/api";
 
-console.log("\n Nivå 2c - Administrasjon uten valgfrie krav");
-console.log("ApiUrl: " + n5rootApiUrl);
-
 
 function jsonToConsole(data) {
     return console.log(JSON.parse(data));

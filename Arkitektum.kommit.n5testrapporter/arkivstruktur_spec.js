@@ -4,8 +4,6 @@
 //var request = require('lib/superagent');
 //var rootApi = "http://localhost:49708/api";
 
-console.log("\n Nivå 1 - Arkivstruktur forenklet uten valgfrie krav");
-console.log("ApiUrl: " + n5rootApiUrl)
 
 function jsonToConsole(data){
     return console.log(JSON.parse(data));
@@ -182,8 +180,10 @@ function test(rootApi) {
         });
 
 
-        it("fritekst søk etter arkiv med search 'test arkiv'", function () {
+        it("fritekst søk etter arkiv med search 'test arkiv 0'", function () {
 
+
+            var searchString = "test arkiv 0";
             var doneFn = jasmine.createSpy("success");
             var xhr = new XMLHttpRequest();
             xhr.onreadystatechange = function (arguments) {
@@ -192,7 +192,7 @@ function test(rootApi) {
                     jsonToConsole(this.responseText);
                 }
             };
-            xhr.open("GET", rootApi + "/arkivstruktur/arkiv/?$search='test arkiv'", false);
+            xhr.open("GET", rootApi + "/arkivstruktur/arkiv?$search='" + searchString + "'", false);
 
 
             xhr.setRequestHeader("Content-type", "application/json");
@@ -202,8 +202,23 @@ function test(rootApi) {
             expect(xhr.status).toBe(200);
             var arkivListe = JSON.parse(xhr.responseText);
             for (var i = 0; i < arkivListe.length; i++) {
-                expect(arkivListe[i].tittel).toContain("test arkiv");
+
+                var resultat = false;
+                var tittel = '';
+                var beskrivelse = '';
+
+                if (arkivListe[i].tittel != null)
+                    tittel = arkivListe[i].tittel;
+
+                if (arkivListe[i].beskrivelse != null)
+                    beskrivelse = arkivListe[i].beskrivelse;
+
+                if (tittel.indexOf(searchString) > -1 || beskrivelse.indexOf(searchString) > -1 ) {
+                    resultat = true;
+                }
+                expect(resultat).toBe(true);
             };
+
             var xhr2 = new XMLHttpRequest();
             var postmsg = '';
             xhr2.onreadystatechange = function (arguments) {
