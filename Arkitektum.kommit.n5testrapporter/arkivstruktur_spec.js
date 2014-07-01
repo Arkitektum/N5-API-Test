@@ -4,7 +4,12 @@
 //var request = require('lib/superagent');
 //var rootApi = "http://localhost:49708/api";
 
+console.log("\n Nivå 1 - Arkivstruktur forenklet uten valgfrie krav");
 console.log("ApiUrl: " + n5rootApiUrl)
+
+function jsonToConsole(data){
+    return console.log(JSON.parse(data));
+}
 
 if (n5rootApiUrl) {
 
@@ -33,7 +38,6 @@ if (n5rootApiUrl) {
 
     jasmineEnv.updateInterval = 250;
 
-    console.log(document.getElementById("report"));
     var htmlReporter = new jasmine.HtmlReporter(null, document.getElementById("report"));
 
     jasmineEnv.addReporter(htmlReporter);
@@ -48,7 +52,7 @@ if (n5rootApiUrl) {
 
 function test(rootApi) {
 
-    describe("arkivstruktur", function () {
+    describe("Nivå 1 - Arkivstruktur forenklet uten valgfrie krav", function () {
 
         it("søk etter arkiv", function () {
 
@@ -57,7 +61,7 @@ function test(rootApi) {
             xhr.onreadystatechange = function (arguments) {
                 if (this.readyState == this.DONE) {
                     doneFn(this.responseText);
-                    console.log(this.responseText);
+                    jsonToConsole(this.responseText);
                 }
             };
             xhr.open("GET", rootApi + "/arkivstruktur/arkiv/", false);
@@ -70,7 +74,7 @@ function test(rootApi) {
             xhr2.onreadystatechange = function (arguments) {
                 if (this.readyState == this.DONE) {
                     doneFn(this.responseText);
-                    console.log(this.responseText);
+                    jsonToConsole(this.responseText);
                     postmsg = this.responseText;
                 }
             };
@@ -85,7 +89,7 @@ function test(rootApi) {
             xhr.onreadystatechange = function (arguments) {
                 if (this.readyState == this.DONE) {
                     doneFn(this.responseText);
-                    console.log(this.responseText);
+                    jsonToConsole(this.responseText);
                 }
             };
             xhr.open("GET", rootApi + "/arkivstruktur/arkiv/?$top=3", false);
@@ -103,7 +107,7 @@ function test(rootApi) {
             xhr2.onreadystatechange = function (arguments) {
                 if (this.readyState == this.DONE) {
                     doneFn(this.responseText);
-                    console.log(this.responseText);
+                    jsonToConsole(this.responseText);
                     postmsg = this.responseText;
                 }
             };
@@ -118,7 +122,7 @@ function test(rootApi) {
             xhr.onreadystatechange = function (arguments) {
                 if (this.readyState == this.DONE) {
                     doneFn(this.responseText);
-                    console.log(this.responseText);
+                    jsonToConsole(this.responseText);
                 }
             };
             xhr.open("GET", rootApi + "/arkivstruktur/arkiv/?$top=5", false);
@@ -136,7 +140,7 @@ function test(rootApi) {
             xhr2.onreadystatechange = function (arguments) {
                 if (this.readyState == this.DONE) {
                     doneFn(this.responseText);
-                    console.log(this.responseText);
+                    jsonToConsole(this.responseText);
                     postmsg = this.responseText;
                 }
             };
@@ -145,17 +149,50 @@ function test(rootApi) {
 
 
 
-        it("søk etter arkiv med tittel filter 'arkiv 234'", function () {
+        it("eksakt søk etter arkiv med tittel filter 'arkiv 234'", function () {
 
             var doneFn = jasmine.createSpy("success");
             var xhr = new XMLHttpRequest();
             xhr.onreadystatechange = function (arguments) {
                 if (this.readyState == this.DONE) {
                     doneFn(this.responseText);
-                    console.log(this.responseText);
+                    jsonToConsole(this.responseText);
                 }
             };
             xhr.open("GET", rootApi + "/arkivstruktur/arkiv/?$filter=tittel eq 'arkiv 234'", false);
+            xhr.setRequestHeader("Content-type", "application/json");
+
+            xhr.send();
+            expect(doneFn).toHaveBeenCalled();
+            expect(xhr.status).toBe(200);
+            var arkivListe = JSON.parse(xhr.responseText);
+            for (var i = 0; i < arkivListe.length; i++) {
+                    expect(arkivListe[i].tittel).toBe("arkiv 234");
+            };
+            var xhr2 = new XMLHttpRequest();
+            var postmsg = '';
+            xhr2.onreadystatechange = function (arguments) {
+                if (this.readyState == this.DONE) {
+                    doneFn(this.responseText);
+                    jsonToConsole(this.responseText);
+                    postmsg = this.responseText;
+                }
+            };
+
+        });
+
+
+        it("fritekst søk etter arkiv med search 'test arkiv'", function () {
+
+            var doneFn = jasmine.createSpy("success");
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function (arguments) {
+                if (this.readyState == this.DONE) {
+                    doneFn(this.responseText);
+                    jsonToConsole(this.responseText);
+                }
+            };
+            xhr.open("GET", rootApi + "/arkivstruktur/arkiv/?$search='test arkiv'", false);
 
 
             xhr.setRequestHeader("Content-type", "application/json");
@@ -165,16 +202,14 @@ function test(rootApi) {
             expect(xhr.status).toBe(200);
             var arkivListe = JSON.parse(xhr.responseText);
             for (var i = 0; i < arkivListe.length; i++) {
-                console.log("\n\n nummer " + i + " i lista er " + arkivListe[i] + "\n\n");
-                expect(arkivListe[i].tittel).toContain("arkiv 234");
-                
+                expect(arkivListe[i].tittel).toContain("test arkiv");
             };
             var xhr2 = new XMLHttpRequest();
             var postmsg = '';
             xhr2.onreadystatechange = function (arguments) {
                 if (this.readyState == this.DONE) {
                     doneFn(this.responseText);
-                    console.log(this.responseText);
+                    jsonToConsole(this.responseText);
                     postmsg = this.responseText;
                 }
             };
@@ -191,7 +226,7 @@ function test(rootApi) {
             xhr.onreadystatechange = function (arguments) {
                 if (this.readyState == this.DONE) {
                     doneFn(this.responseText);
-                    console.log(this.responseText);
+                    jsonToConsole(this.responseText);
                     postmsg = this.responseText;
                 }
             };
@@ -203,7 +238,7 @@ function test(rootApi) {
             xhr2.onreadystatechange = function (arguments) {
                 if (this.readyState == this.DONE) {
                     doneFn2(this.responseText);
-                    console.log(this.responseText);
+                    jsonToConsole(this.responseText);
                 }
             };
             xhr2.open("POST", rootApi + "/arkivstruktur/ny-registrering", false)
@@ -213,6 +248,88 @@ function test(rootApi) {
             expect(xhr2.status).toBe(201);
         });
 
+
+        it("oppdatere registrering", function () {
+            var doneFn = jasmine.createSpy("success");
+            var doneFn2 = jasmine.createSpy("success_post");
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function (arguments) {
+                if (this.readyState == this.DONE) {
+                    doneFn(this.responseText);
+                    jsonToConsole(this.responseText);
+                }
+            };
+            xhr.open("GET", rootApi + "/arkivstruktur/registrering/12345", false);
+            xhr.setRequestHeader("Content-type", "application/json");
+
+            xhr.send();
+            expect(doneFn).toHaveBeenCalled();
+            expect(xhr.status).toBe(200);
+
+            var arkivListe = JSON.parse(xhr.responseText);
+                    expect(arkivListe.systemID).toBe("12345");
+                    arkivListe.arkivertAv = ("Oppdatereren");
+                    //oppdatertRegistrering += JSON.stringify(arkivListe[i]);
+                var xhr2 = new XMLHttpRequest();
+                var postmsg = '';
+                xhr2.onreadystatechange = function (arguments) {
+                    if (this.readyState == this.DONE) {
+                        doneFn2(arkivListe);
+                        jsonToConsole(JSON.stringify(arkivListe));
+                    }
+                };
+
+                xhr2.open("POST", rootApi + "/arkivstruktur/registrering/12345", false)
+                xhr2.setRequestHeader("Content-type", "application/json");
+                xhr2.send(JSON.stringify(arkivListe));
+                expect(doneFn2).toHaveBeenCalled();
+                expect(xhr2.status).toBe(200);
+            
+        });
+
+        
+
+        it("endre dato for arkiv", function () {
+            var systemID = '12345';
+            var doneFn = jasmine.createSpy("success");
+            var doneFn2 = jasmine.createSpy("success_post");
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function (arguments) {
+                if (this.readyState == this.DONE) {
+                    doneFn(this.responseText);
+                    jsonToConsole(this.responseText);
+                }
+            };
+            xhr.open("GET", rootApi + "/arkivstruktur/arkiv/" + systemID, false);
+            xhr.setRequestHeader("Content-type", "application/json");
+
+            xhr.send();
+            expect(doneFn).toHaveBeenCalled();
+            expect(xhr.status).toBe(200);
+
+            var arkivListe = JSON.parse(xhr.responseText);
+            if (arkivListe != null) {
+                    expect(arkivListe.systemID).toBe(systemID);
+                    arkivListe.opprettetDatoSpecified = true;
+                    arkivListe.beskrivelse = "testbeskrivelse";
+                    arkivListe.opprettetDato = "10.05.13";
+                var xhr2 = new XMLHttpRequest();
+                xhr2.onreadystatechange = function (arguments) {
+                    if (this.readyState == this.DONE) {
+                        doneFn2(arkivListe);
+                        jsonToConsole(JSON.stringify(arkivListe));
+                        //postmsg = oppdatertRegistrering;
+                    }
+                };
+
+                xhr2.open("POST", rootApi + "/arkivstruktur/arkiv/" + systemID, false)
+                xhr2.setRequestHeader("Content-type", "application/json");
+                xhr2.send(JSON.stringify(arkivListe));
+                expect(doneFn2).toHaveBeenCalled();
+                expect(xhr2.status).toBe(200);
+            }
+        });
+        
 
     });
 

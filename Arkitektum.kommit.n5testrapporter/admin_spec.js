@@ -4,8 +4,13 @@
 //var request = require('lib/superagent');
 //var rootApi = "http://localhost:49708/api";
 
+console.log("\n Nivå 2c - Administrasjon uten valgfrie krav");
+console.log("ApiUrl: " + n5rootApiUrl);
 
-console.log("ApiUrl: " + n5rootApiUrl)
+
+function jsonToConsole(data) {
+    return console.log(JSON.parse(data));
+}
 
 if (n5rootApiUrl) {
 
@@ -34,7 +39,6 @@ if (n5rootApiUrl) {
 
     jasmineEnv.updateInterval = 250;
 
-    console.log(document.getElementById("report"));
     var htmlReporter = new jasmine.HtmlReporter(null, document.getElementById("report"));
 
     jasmineEnv.addReporter(htmlReporter);
@@ -58,7 +62,7 @@ function test(rootApi) {
             xhr.onreadystatechange = function (arguments) {
                 if (this.readyState == this.DONE) {
                     doneFn(this.responseText);
-                    console.log(this.responseText);
+                    jsonToConsole(this.responseText);
                 }
             };
             xhr.open("GET", rootApi, false);
@@ -79,7 +83,7 @@ function test(rootApi) {
             xhr.onreadystatechange = function (arguments) {
                 if (this.readyState == this.DONE) {
                     doneFn(this.responseText);
-                    console.log(this.responseText);
+                    jsonToConsole(this.responseText);
                     postmsg = this.responseText;
                 }
             };
@@ -91,7 +95,7 @@ function test(rootApi) {
             xhr2.onreadystatechange = function (arguments) {
                 if (this.readyState == this.DONE) {
                     doneFn2(this.responseText);
-                    console.log(this.responseText);
+                    jsonToConsole(this.responseText);
                 }
             };
             xhr2.open("POST", rootApi + "/arkivstruktur/nytt-arkiv", false)
@@ -109,7 +113,7 @@ function test(rootApi) {
             xhr.onreadystatechange = function (arguments) {
                 if (this.readyState == this.DONE) {
                     doneFn(this.responseText);
-                    console.log(this.responseText);
+                    jsonToConsole(this.responseText);
                     postmsg = this.responseText;
                 }
             };
@@ -121,7 +125,7 @@ function test(rootApi) {
             xhr2.onreadystatechange = function (arguments) {
                 if (this.readyState == this.DONE) {
                     doneFn2(this.responseText);
-                    console.log(this.responseText);
+                    jsonToConsole(this.responseText);
                 }
             };
             xhr2.open("POST", rootApi + "/arkivstruktur/ny-arkivdel", false)
