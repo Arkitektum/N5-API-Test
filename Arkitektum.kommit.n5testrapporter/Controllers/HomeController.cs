@@ -8,10 +8,7 @@ namespace Arkitektum.kommit.n5testrapporter.Controllers
 {
     public class HomeController : Controller
     {
-        public ActionResult Index()
-        {
-            return View();
-        }
+        
 
         public ActionResult About()
         {
@@ -26,7 +23,7 @@ namespace Arkitektum.kommit.n5testrapporter.Controllers
 
             return View();
         }
-        public ActionResult Test(string rootApiUrl)
+        public ActionResult Index(string rootApiUrl)
         {
             ViewBag.Message = "Test page.";
             if (!string.IsNullOrWhiteSpace(rootApiUrl))
