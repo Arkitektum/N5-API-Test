@@ -406,17 +406,67 @@
         it(" - søk etter mapper med bygg", function () {
             expect(true).toBe(false);
         });
-        it(" - søk etter mapper med eiendom", function () {
+        it(" - søk etter mapper med eiendom (0..*)", function () {
             expect(true).toBe(false);
         });
-        it(" - søk etter mapper med merknadstype", function () {
-            expect(true).toBe(false);
+        it(" - søk etter mapper med gradering (0..1)", function () {
+            var doneFn = jasmine.createSpy("success");
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function (arguments) {
+                if (this.readyState == this.DONE) {
+                    doneFn(this.responseText);
+                }
+            };
+            xhr.open("GET", rootApi + "/arkivstruktur/mappe/?$filter=gradering/graderingskode/kode eq 'B'", false);
+            xhr.setRequestHeader("Content-type", "application/json");
+            xhr.send();
+            expect(doneFn).toHaveBeenCalled();
+            expect(xhr.status).toBe(200);
+            var resultatListe = JSON.parse(xhr.responseText);
+            for (var i = 0; i < resultatListe.length; i++) {
+                expect(resultatListe[i].gradering.graderingskode.kode).toBe("B");
+            }
+        });
+        it(" - søk etter mapper med en merknad med merknadstype B (expand brukes) (0..*)", function () {
+            var doneFn = jasmine.createSpy("success");
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function (arguments) {
+                if (this.readyState == this.DONE) {
+                    doneFn(this.responseText);
+                }
+            };
+            xhr.open("GET", rootApi + "/arkivstruktur/mappe/?$expand=merknad&$filter=merknad/any(m: m/merknadstype/kode eq 'B')", false);
+            xhr.setRequestHeader("Content-type", "application/json");
+            xhr.send();
+            expect(doneFn).toHaveBeenCalled();
+            expect(xhr.status).toBe(200);
+            var resultatListe = JSON.parse(xhr.responseText);
+            for (var i = 0; i < resultatListe.length; i++) {
+                for (var j = 0; j < resultatListe[i].merknad.length; j++) {
+                    expect(resultatListe[i].merknad[j].merknadstype.kode).toBe("B");
+                }
+            }
         });
         it(" - søk etter mapper med posisjon", function () {
             expect(true).toBe(false);
         });
         it(" - søk etter mapper innenfor en arkivdel", function () {
-            expect(true).toBe(false);
+            var doneFn = jasmine.createSpy("success");
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function (arguments) {
+                if (this.readyState == this.DONE) {
+                    doneFn(this.responseText);
+                }
+            };
+            xhr.open("GET", rootApi + "/arkivstruktur/arkivdel/2/mappe/?$filter=tittel eq 'test'", false);
+            xhr.setRequestHeader("Content-type", "application/json");
+            xhr.send();
+            expect(doneFn).toHaveBeenCalled();
+            expect(xhr.status).toBe(200);
+            var resultatListe = JSON.parse(xhr.responseText);
+            for (var i = 0; i < resultatListe.length; i++) {
+                expect(resultatListe[i].tittel).toContain("test");
+            }
         });
         it(" - søk etter mapper innenfor en klasse", function () {
             expect(true).toBe(false);
