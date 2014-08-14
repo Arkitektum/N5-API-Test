@@ -26,9 +26,22 @@ function jsonToConsole(data) {
 
 function finnLinkRel(rel, responseText) {
     var linkListe = JSON.parse(responseText);
-    for (var i = 0; i < linkListe.link.length; i++) {
-        if (linkListe.link[i].rel == rel) {
-            return linkListe.link[i].href;
+    for (var i = 0; i < linkListe._links.length; i++) {
+        if (linkListe._links[i].rel == rel) {
+            return linkListe._links[i].href;
         }
     }
+}
+
+function getLinkressurs(frauri, rel) {
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function (arguments) {
+        if (this.readyState == this.DONE) {
+            doneFn(this.responseText);
+        }
+    };
+    xhr.open("GET", frauri, false);
+    xhr.setRequestHeader("Content-type", "application/json");
+    xhr.send();
+    return finnLinkRel(rel, xhr.responseText);
 }

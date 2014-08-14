@@ -1,5 +1,6 @@
 ﻿
 
+var arkivstrukturUri;
 
 
     describe("Nivå 0 - Basistester", function () {
@@ -10,24 +11,64 @@
         });
 
         it(" - CORS Cross-origin resource sharing", function () {
-            expect(true).toBe(false);
+            var doneFn = jasmine.createSpy("success");
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function (arguments) {
+                if (this.readyState == this.DONE) {
+                    doneFn(this.responseText);
+                }
+            };
+            xhr.open("GET", rootApi, false);
+            xhr.setRequestHeader("Content-type", "application/json");
+            xhr.send();
+            expect(doneFn).toHaveBeenCalled();
+            expect(xhr.status).toBe(200);
         });
 
         it(" - krav om autentisering", function () {
             expect(true).toBe(false);
         });
         
-        it(" - formatstøtte - xml + json", function () {
-            expect(true).toBe(false);
+        it(" - formatstøtte - json", function () {
+            var doneFn = jasmine.createSpy("success");
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function (arguments) {
+                if (this.readyState == this.DONE) {
+                    doneFn(this.responseText);
+                }
+            };
+            xhr.open("GET", rootApi, false);
+            xhr.setRequestHeader("Content-type", "application/json");
+            xhr.send();
+            expect(doneFn).toHaveBeenCalled();
+            expect(xhr.status).toBe(200);
             // application/vnd.noark5-v4+json og application/vnd.noark5-v4+xml
+        });
+        it(" - formatstøtte - xml", function () {
+            var doneFn = jasmine.createSpy("success");
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function (arguments) {
+                if (this.readyState == this.DONE) {
+                    doneFn(this.responseText);
+                }
+            };
+            xhr.open("GET", rootApi, false);
+            xhr.setRequestHeader("Content-type", "application/xml");
+            xhr.send();
+            expect(doneFn).toHaveBeenCalled();
+            expect(xhr.status).toBe(200);
+            //TODO application/vnd.noark5-v4+json og application/vnd.noark5-v4+xml
+            //TODO kontroll mot xsd skjema
         });
     });
 
     describe("Nivå 1 - Arkivstruktur forenklet(5.1.3) uten valgfrie krav", function () {
         var rootApi;
+        var arkivSystemID;
 
         beforeEach(function () {
             rootApi = document.getElementById("rootApiUrl").value;
+            arkivSystemID = document.getElementById("arkivId").value;
         });
         it(" - sjekk om støtter arkivstruktur", function () {
             var doneFn = jasmine.createSpy("success");
@@ -44,22 +85,29 @@
             var href = finnLinkRel("http://rel.kxml.no/noark5/v4/api/arkivstruktur", xhr.responseText);
             expect(href).toBeDefined();
             expect(href.length).toBeGreaterThan(0);
+            arkivstrukturUri = href;
         });
 
         it(" - søk etter arkiv (5.1.4, )", function () {
 
             var doneFn = jasmine.createSpy("success");
+
+            var link = getLinkressurs(arkivstrukturUri, "http://rel.kxml.no/noark5/v4/api/arkivstruktur/arkiv");
+            link = link.replace("{?$filter&$orderby&$top&$skip&$search}", "?$filter=systemID eq '123456789'");
+                        
             var xhr = new XMLHttpRequest();
             xhr.onreadystatechange = function (arguments) {
                 if (this.readyState == this.DONE) {
                     doneFn(this.responseText);
                 }
             };
-            xhr.open("GET", rootApi + "/arkivstruktur/arkiv/", false);
+            xhr.open("GET", link, false);
             xhr.setRequestHeader("Content-type", "application/json");
             xhr.send();
             expect(doneFn).toHaveBeenCalled();
             expect(xhr.status).toBe(200);
+            var arkivListe = JSON.parse(xhr.responseText);
+            expect(arkivListe.length).toBe(1);
 
         });
 
@@ -162,7 +210,23 @@
         });
 
         it(" - søk etter arkivdel (5.1.4)", function () {
-            expect(true).toBe(false);
+            var doneFn = jasmine.createSpy("success");
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function (arguments) {
+                if (this.readyState == this.DONE) {
+                    doneFn(this.responseText);
+                    jsonToConsole(this.responseText);
+                }
+            };
+            xhr.open("GET", rootApi + "/arkivstruktur/arkivdel/?$filter=tittel eq 'arkiv 234'", false);
+            xhr.setRequestHeader("Content-type", "application/json");
+            xhr.send();
+            expect(doneFn).toHaveBeenCalled();
+            expect(xhr.status).toBe(200);
+            var arkivListe = JSON.parse(xhr.responseText);
+            for (var i = 0; i < arkivListe.length; i++) {
+                expect(arkivListe[i].tittel).toBe("arkiv 234");
+            }
         });
         it(" - søk etter arkivskaper (5.1.4)", function () {
             expect(true).toBe(false);
