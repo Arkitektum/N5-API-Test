@@ -168,16 +168,92 @@
             expect(true).toBe(false);
         });
         it(" - søk etter registrering (5.1.4)", function () {
-            expect(true).toBe(false);
+            //expect(true).toBe(false);
+            var doneFn = jasmine.createSpy("success");
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function (arguments) {
+                if (this.readyState == this.DONE) {
+                    doneFn(this.responseText);
+                }
+            };
+            xhr.open("GET", rootApi + "/arkivstruktur/registrering/", false);
+            xhr.setRequestHeader("Content-type", "application/json");
+            xhr.send();
+            expect(doneFn).toHaveBeenCalled();
+            expect(xhr.status).toBe(200);
         });
         it(" - søk etter registrering mellom datoer (5.9.4)", function () {
-            expect(true).toBe(false);
+            var doneFn = jasmine.createSpy("success");
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function (arguments) {
+                if (this.readyState == this.DONE) {
+                    doneFn(this.responseText);
+                    jsonToConsole(this.responseText);
+                }
+            };
+            xhr.open("GET", rootApi + "/arkivstruktur/registrering/?$StartTime eq mindatetime(01.04.14) and EndTime eq maxdatetime(07.04.14)", false);
+            xhr.setRequestHeader("Content-type", "application/json");
+            xhr.send();
+            expect(doneFn).toHaveBeenCalled();
+            expect(xhr.status).toBe(200);
+            var resultat = false;
+            var arkivListe = JSON.parse(xhr.responseText);
+            for (var i = 0; i < arkivListe.length; i++) {
+                resultat  = false;
+                if (arkivListe[i].oppdatertDato > Date('01.04.14') && arkivListe[i].oppdatertDato < Date('07.04.14')){
+                    resultat = true;
+                }
+                expect(resultat).toBe(true);
+            }
         });
         it(" - søk etter registrering før dato (5.9.5)", function () {
-            expect(true).toBe(false);
+            var doneFn = jasmine.createSpy("success");
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function (arguments) {
+                if (this.readyState == this.DONE) {
+                    doneFn(this.responseText);
+                    jsonToConsole(this.responseText);
+                }
+            };
+            xhr.open("GET", rootApi + "/arkivstruktur/registrering/?$EndTime eq maxdatetime(07.04.14)", false);
+            xhr.setRequestHeader("Content-type", "application/json");
+            xhr.send();
+            expect(doneFn).toHaveBeenCalled();
+            expect(xhr.status).toBe(200);
+            var resultat = false;
+            var arkivListe = JSON.parse(xhr.responseText);
+            for (var i = 0; i < arkivListe.length; i++) {
+                resultat = false;
+                if (arkivListe[i].oppdatertDato <= Date('07.04.14')) {
+                    resultat = true;
+                }
+                expect(resultat).toBe(true);
+            }
         });
         it(" - søk etter registrering etter dato (5.9.6)", function () {
-            expect(true).toBe(false);
+            var doneFn = jasmine.createSpy("success");
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function (arguments) {
+                if (this.readyState == this.DONE) {
+                    doneFn(this.responseText);
+                    jsonToConsole(this.responseText);
+                }
+            };
+            xhr.open("GET", rootApi + "/arkivstruktur/registrering/?$StartTime eq mindatetime(01.04.14)", false);
+            xhr.setRequestHeader("Content-type", "application/json");
+            xhr.send();
+            expect(doneFn).toHaveBeenCalled();
+            expect(xhr.status).toBe(200);
+            var resultat = false;
+            var arkivListe = JSON.parse(xhr.responseText);
+            for (var i = 0; i < arkivListe.length; i++) {
+                resultat = false;
+                if (arkivListe[i].oppdatertDato > Date('01.04.14')) {
+                    resultat = true;
+                }
+                //expect(resultat).toBe(true);
+                expect(arkivListe[i].oppdatertDato).toBeGreaterThan(Date('01.04.14'));
+            }
         });
         it(" - søk etter dokumentbeskrivelse (5.1.4)", function () {
             expect(true).toBe(false);
