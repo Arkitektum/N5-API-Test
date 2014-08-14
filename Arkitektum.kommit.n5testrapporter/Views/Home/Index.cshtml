@@ -2,20 +2,6 @@
     ViewBag.Title = "Test";
 }
 
-@section scripts{
-    <link rel="stylesheet" type="text/css" href="/lib/jasmine-2.0.0/jasmine.css">
-
-    <script type="text/javascript" src="/lib/jasmine-2.0.0/jasmine.js"></script>
-    <script type="text/javascript" src="/lib/jasmine-2.0.0/jasmine-html.js"></script>
-    <script type="text/javascript" src="/lib/jasmine-2.0.0/boot.js"></script>
-    <script type="text/javascript" src="/test.js"></script>
-    <script type="text/javascript" src="/tester_arkivstruktur.js"></script>
-    <script type="text/javascript" src="/tester_sakarkiv.js"></script>
-    <script type="text/javascript" src="/tester_moete.js"></script>
-    <script type="text/javascript" src="/tester_admin.js"></script>
-    <script type="text/javascript" src="/tester_resten.js"></script>
-}
-
 
 
 
@@ -25,7 +11,7 @@
 <div class="row">
     <div class="col-md-12">
         <p>For å kjøre tester så må en angi en tilgjengelig URL til NOARK 5 REST Api. Ved trykk på "Kjør tester" så kjøres tilgjenglige tester på API for å sjekke om krav til de forskjellige nivå er oppfylt.</p>
-        <form action="#" onsubmit="javascript:executeTests()" class="form-inline">
+        <form  action="/Home/Index2"  class="form-inline">
             <div class="form-group">
                 <label for="rootApiUrl">Noark 5 REST Api</label>
                 <input id="rootApiUrl" type="url" name="rootApiUrl" value="@Session["rootApiUrl"]" class="form-control" />
@@ -34,6 +20,7 @@
         </form>
 
         <div id="report"></div>
- 
+
     </div>
 </div>
+

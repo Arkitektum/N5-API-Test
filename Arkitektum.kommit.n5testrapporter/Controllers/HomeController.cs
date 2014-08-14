@@ -17,13 +17,13 @@ namespace Arkitektum.kommit.n5testrapporter.Controllers
             return View();
         }
 
-        public ActionResult Contact()
+        public ActionResult Index()
         {
             ViewBag.Message = "Your contact page.";
 
             return View();
         }
-        public ActionResult Index(string rootApiUrl)
+        public ActionResult Index2(string rootApiUrl)
         {
             ViewBag.Message = "Test page.";
             if (!string.IsNullOrWhiteSpace(rootApiUrl))
