@@ -218,7 +218,7 @@ var arkivstrukturUri;
                     jsonToConsole(this.responseText);
                 }
             };
-            xhr.open("GET", rootApi + "/arkivstruktur/arkivdel/?$filter=tittel eq 'arkiv 234'", false);
+            xhr.open("GET", rootApi + "/arkivstruktur/arkivdel/?$filter=contains('arkiv 234',tittel)", false);
             xhr.setRequestHeader("Content-type", "application/json");
             xhr.send();
             expect(doneFn).toHaveBeenCalled();
