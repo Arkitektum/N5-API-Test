@@ -218,14 +218,14 @@ var arkivstrukturUri;
                     jsonToConsole(this.responseText);
                 }
             };
-            xhr.open("GET", rootApi + "/arkivstruktur/arkivdel/?$filter=contains('arkiv 234',tittel)", false);
+            xhr.open("GET", rootApi + "/arkivstruktur/arkivdel/?$filter=substringof('arkiv 234',tittel)", false);
             xhr.setRequestHeader("Content-type", "application/json");
             xhr.send();
             expect(doneFn).toHaveBeenCalled();
             expect(xhr.status).toBe(200);
             var arkivListe = JSON.parse(xhr.responseText);
             for (var i = 0; i < arkivListe.length; i++) {
-                expect(arkivListe[i].tittel).toBe("arkiv 234");
+                expect(arkivListe[i].tittel).toContain("arkiv 234");
             }
         });
         it(" - søk etter arkivskaper (5.1.4)", function () {
@@ -255,19 +255,18 @@ var arkivstrukturUri;
                     jsonToConsole(this.responseText);
                 }
             };
-            xhr.open("GET", rootApi + "/arkivstruktur/registrering/?$filter=year(oppdatertDato) gt 2012 and filter=year(oppdatertDato) lt 2014", false); //Todo sjekke også på måned og dag
+
+            xhr.open("GET", rootApi + "/arkivstruktur/registrering/?$filter=oppdatertDato gt DateTime'2012-04-01T00:00:00' and oppdatertDato lt DateTime'2014-04-07T00:00:00'", false);
             xhr.setRequestHeader("Content-type", "application/json");
             xhr.send();
             expect(doneFn).toHaveBeenCalled();
             expect(xhr.status).toBe(200);
-            var resultat = false;
             var arkivListe = JSON.parse(xhr.responseText);
             for (var i = 0; i < arkivListe.length; i++) {
-                resultat  = false;
-                if (arkivListe[i].oppdatertDato > Date('01.04.12') && arkivListe[i].oppdatertDato < Date('07.04.14')){
-                    resultat = true;
-                }
-                expect(resultat).toBe(true);
+
+                expect(arkivListe[i].oppdatertDato).toBeGreaterThan('2012-04-01');
+                expect(arkivListe[i].oppdatertDato).toBeLessThan('2014-04-07');
+            
             }
         });
         it(" - søk etter registrering før dato (5.9.5)", function () {
@@ -279,12 +278,11 @@ var arkivstrukturUri;
                     jsonToConsole(this.responseText);
                 }
             };
-            xhr.open("GET", rootApi + "/arkivstruktur/registrering/?$filter=year(oppdatertDato) lt 2014", false); //Todo sjekke også på måned og dag
+            xhr.open("GET", rootApi + "/arkivstruktur/registrering/?$filter=oppdatertDato lt DateTime'2014-08-15T00:00:00'", false);
             xhr.setRequestHeader("Content-type", "application/json");
             xhr.send();
             expect(doneFn).toHaveBeenCalled();
             expect(xhr.status).toBe(200);
-            var resultat = false;
             var arkivListe = JSON.parse(xhr.responseText);
             for (var i = 0; i < arkivListe.length; i++) {
                 expect(arkivListe[i].oppdatertDato).toBeLessThan('2014-08-15');
@@ -299,21 +297,39 @@ var arkivstrukturUri;
                     jsonToConsole(this.responseText);
                 }
             };
-            xhr.open("GET", rootApi + "/arkivstruktur/registrering/?$filter=year(oppdatertDato) gt 2013", false); //Todo sjekke også på måned og dag
+            xhr.open("GET", rootApi + "/arkivstruktur/registrering/?$filter=oppdatertDato gt DateTime'2013-08-13T23:59:59'", false); 
             xhr.setRequestHeader("Content-type", "application/json");
             xhr.send();
             expect(doneFn).toHaveBeenCalled();
             expect(xhr.status).toBe(200);
-            var resultat = false;
             var arkivListe = JSON.parse(xhr.responseText);
             for (var i = 0; i < arkivListe.length; i++) {
                 
                 expect(arkivListe[i].oppdatertDato).toBeGreaterThan('2013-08-13');
             }
         });
+
         it(" - søk etter dokumentbeskrivelse (5.1.4)", function () {
-            expect(true).toBe(false);
+            var doneFn = jasmine.createSpy("success");
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function (arguments) {
+                if (this.readyState == this.DONE) {
+                    doneFn(this.responseText);
+                    jsonToConsole(this.responseText);
+                }
+            };
+            xhr.open("GET", rootApi + "/arkivstruktur/dokumentbeskrivelse/?$filter=substringof('angitt%20tittel',tittel)");
+            xhr.setRequestHeader("Content-type", "application/json");
+            xhr.send();
+            expect(doneFn).toHaveBeenCalled();
+            expect(xhr.status).toBe(200);
+            var arkivListe = JSON.parse(xhr.responseText);
+            for (var i = 0; i < arkivListe.length; i++) {
+                expect(arkivListe[i].tittel).toContain("angitt tittel");
+            }
+
         });
+
         it(" - søk etter dokumentobjekt (5.1.4, 5.9.8, 5.9.9)", function () {
             expect(true).toBe(false);
         });
